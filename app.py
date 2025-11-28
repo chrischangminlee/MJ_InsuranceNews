@@ -116,27 +116,6 @@ def main() -> None:
     st.title("보험/금융권 통합 모니터링 (원문 보기)")
     st.write("각 출처 페이지를 한 화면에서 확인하고, 최신 글을 요약 테이블로 봅니다.")
 
-    st.markdown(
-        """
-        <style>
-        .source-btn {
-            background: linear-gradient(135deg, #1f6feb, #1b4b9c);
-            color: white;
-            padding: 14px 18px;
-            border-radius: 10px;
-            border: 0;
-            font-weight: 700;
-            width: 100%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            cursor: pointer;
-        }
-        .source-btn:hover { background: linear-gradient(135deg, #1a5bcc, #163f82); }
-        .source-btn:active { transform: translateY(1px); }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
     all_names = [site["name"] for site in SITES]
     site_map = {site["name"]: site for site in SITES}
 
@@ -177,13 +156,17 @@ def main() -> None:
     if "selected_site" not in st.session_state:
         st.session_state["selected_site"] = all_names[0]
 
-    # Quick buttons to pick a site.
     st.subheader("웹사이트 바로보기")
-    cols = st.columns(len(SITES))
-    for col, site in zip(cols, SITES):
-        with col:
-            if st.button(site["name"], key=f"btn_{site['name']}", use_container_width=True):
-                st.session_state["selected_site"] = site["name"]
+    current_idx = all_names.index(st.session_state["selected_site"])
+    selected_name = st.radio(
+        "출처 선택",
+        options=all_names,
+        index=current_idx,
+        horizontal=True,
+        key="selected_site_radio",
+        label_visibility="hidden",
+    )
+    st.session_state["selected_site"] = selected_name
 
     selected = [st.session_state["selected_site"]]
     iframe_height = 800
